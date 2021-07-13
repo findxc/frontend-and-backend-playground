@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <title>cors-example</title>
+    <style>
+      body {
+        padding: 48px;
+      }
+
+      body,
+      input,
+      button,
+      select {
+        font-size: 16px;
+      }
+
+      input,
+      button {
+        height: 28px;
+        box-sizing: border-box;
+      }
+
+      #msg {
+        position: fixed;
+        top: 12px;
+        right: 12px;
+        padding: 2px 8px;
+        opacity: 0;
+        transition: all 0.3s;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="msg"></div>
+    <div>
+      <label for="baseURLInput">baseURL：</label>
+      <input
+        id="baseURLInput"
+        placeholder="默认为 http://localhost:3000"
+        value="http://localhost:3000"
+      />
+      <br /><br />
+
+      <label for="urlInput">请求路径：</label>
+      <input id="urlInput" placeholder="默认为 /cors" value="/cors" />
+      <br /><br />
+
+      <label for="methodSelect">请求方式：</label>
+      <select id="methodSelect">
+        <option value="GET">GET</option>
+        <option value="DELETE">DELETE</option>
+        <option value="POST">POST</option>
+        <option value="PUT">PUT</option>
+      </select>
+      <br /><br />
+
+      <label for="headerInput">请求头：</label>
+      <input id="headerInput" placeholder="输入 JSON 格式" />
+      <br /><br />
+
+      <label for="bodyInput">请求体：</label>
+      <input id="bodyInput" placeholder="输入 JSON 格式" />
+      <br /><br />
+
+      <label for="withCredentialsSelect">withCredentials：</label>
+      <select id="withCredentialsSelect">
+        <option value="">不设置</option>
+        <option value="true">设为 true</option>
+      </select>
+      <br /><br /><br />
+
+      <button id="requestBtn">发送请求</button>
+    </div>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="./DomUtil.js"></script>
+    <script src="./showMsg.js"></script>
+    <script>
+      $('requestBtn').onClick(() => {
+        const baseURL = $('baseURLInput').value || 'http://localhost:3000'
+        const url = $('urlInput').value || '/cors'
+        const method = $('methodSelect').value
+        const header = $('headerInput').value
+        const body = $('bodyInput').value
+        const withCredentials = $('withCredentialsSelect').value
+
+        const options = { baseURL, url, method }
+        if (header) {
+          options.headers = JSON.parse(header)
+        }
+        if (body) {
+          options.data = JSON.parse(body)
+        }
+        if (withCredentials) {
+          options.withCredentials = true
+        }
+
+        axios(options)
+          .then((res) => {
+            console.log(res);
+            showMsg(`${method.toUpperCase()} ${url} 请求成功`)
+          })
+          .catch(() => {
+            showMsg(`${method.toUpperCase()} ${url} 请求失败`, 'error')
+          })
+      })
+    </script>
+  </body>
+</html>
