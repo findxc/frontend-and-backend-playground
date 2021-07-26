@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <title>XSS and CSRF example</title>
+    <style>
+      body {
+        padding: 48px;
+        font-size: 16px;
+      }
+
+      .main > * {
+        margin-bottom: 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main">
+      <div>新闻内容</div>
+      <div id="news"></div>
+      <a id="link">一个 href 来自接口的链接</a>
+    </div>
+
+    <script>
+      const fakeGetNews = () => {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            // 对于接口返回的 html 和 url 要确认安全才直接显示在前端页面上
+            // const html = '<img src="" onerror=console.log(document.cookie) />'
+            // const html = '<a href="javascript:console.log(document.cookie)">访问xxx</a>'
+            const url = 'javascript:console.log(document.cookie)'
+
+            // 对于允许跨域并且携带 cookie 的接口，要严格限制允许哪些域访问；重要操作增加二次确认，减轻 cookie 泄漏带来的影响
+            // const html = `<img src="https://bbb.com:3001/cors" />`
+            const html = `<img src="" onerror="fetch('https://bbb.com:3001/cors',{credentials:'include'}).then(function(res){return res.json()}).then(function(res){console.log(res)})" />`
+
+            // const html = ''
+            // const url = ''
+            resolve({ html, url })
+          }, 300)
+        })
+      }
+
+      window.onload = () => {
+        fakeGetNews().then(res => {
+          const newsEle = document.getElementById('news')
+          newsEle.innerHTML = res.html
+
+          const linkEle = document.getElementById('link')
+          linkEle.href = res.url
+        })
+      }
+    </script>
+  </body>
+</html>
