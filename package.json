@@ -1,5 +1,5 @@
 {
-  "name": "cors-example",
+  "name": "frontend-and-backend-playground",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,6 +7,7 @@
     "start-no-cookie": "nodemon --watch backend backend/noCookie.js & serve frontend",
     "start-need-cookie": "nodemon --watch backend backend/needCookie.js & serve -l 5000 -l 5005 frontend",
     "start-test-cookie": "nodemon --watch backend backend/testSetCookie.js & serve --ssl-cert ./ssl-cert.pem --ssl-key ssl-key.pem frontend",
+    "start-not-safe": "nodemon --watch backend backend/testSetCookie.js & serve -l 5000 -l 5005 --ssl-cert ./ssl-cert.pem --ssl-key ssl-key.pem frontend",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
